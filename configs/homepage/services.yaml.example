@@ -1,0 +1,24 @@
+Homelab:
+  - Pi-hole:
+      icon: pihole.png
+      href: https://pihole.pizza/admin
+      description: Network-wide DNS sinkhole
+      widgets:
+        - type: pihole
+          url: http://192.0.2.10       # simplest: hit host-mapped port 80
+          version: 6                      # Pi-hole v6 requires this
+          key: ${PIHOLE_API_KEY}          # we'll set this env below
+
+Networking:
+  - Homepage:
+      icon: homepage.png
+      href: https://homepage.example
+      description: Start page
+
+  # Optional: Caddy widget (only if admin API is exposed)
+  # - Caddy:
+  #     icon: caddy.png
+  #     href: https://pihole.pizza   # or wherever your Caddy UI/docs live
+  #     widgets:
+  #       - type: caddy
+  #         url: http://192.0.2.10:2019  # Caddy admin API endpoint

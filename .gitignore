@@ -1,0 +1,23 @@
+# Backups & bundles
+homelab-backups/
+homelab-bundles/
+homelab-image-build-*/
+restore-test-*/
+bundle/
+**/images.tar
+**/backup/
+**/certs/
+**/volumes/
+**/bind-mounts/
+**/manifests/
+
+# Secrets
+.env
+*.crt
+*.key
+*.pem
+
+# OS/editor
+.DS_Store
+Thumbs.db
+*.swp

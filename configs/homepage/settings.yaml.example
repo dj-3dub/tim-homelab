@@ -1,0 +1,15 @@
+title: Tim's Homelab
+description: Handy shortcuts + live widgets
+favicon: https://homepage.example/icons/cnn.svg   # any icon you placed in ./public/icons
+
+# Optional layout tweaks (examples)
+layout:
+  Homelab:
+    style: row
+    columns: 4
+  Networking:
+    style: row
+    columns: 3
+
+# Optional: flatter icon style for mdi/si
+iconStyle: theme

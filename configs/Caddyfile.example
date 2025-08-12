@@ -1,0 +1,47 @@
+{
+    auto_https disable_redirects
+    admin off
+}
+
+http://pihole.pizza {
+    redir https://{host}{uri} 308
+}
+
+https://pihole.pizza {
+    tls internal
+    encode gzip
+
+    # Redirect "/" to the admin UI when hitting the Pi-hole host
+    handle_path / {
+        redir /admin 302
+    }
+
+    @api path /api/* /admin/api/* /admin/scripts/pi-hole/php/*
+    header @api Access-Control-Allow-Origin "*"
+
+    @static path /admin/*.css /admin/*.js /admin/*.png /admin/*.svg /pihole/*
+    header @static Cache-Control "public, max-age=31536000, immutable"
+
+    # IMPORTANT: use host.docker.internal to reach services on the host from inside the container
+    reverse_proxy host.docker.internal:8081 {
+        header_up Host {host}
+        health_uri /admin/login
+        health_timeout 2s
+        fail_duration 5s
+    }
+}
+
+http://homepage.example {
+    redir https://{host}{uri} 308
+}
+
+https://homepage.example {
+    tls internal
+    encode gzip
+    reverse_proxy 127.0.0.1:3000 {
+        header_up Host {host}
+        health_uri /
+        health_timeout 2s
+        fail_duration 5s
+    }
+}

@@ -1,0 +1,19 @@
+# Weather (free, no API key) — Chicago
+- openmeteo:
+    label: Chicago
+    latitude: 41.8781
+    longitude: -87.6298
+    timezone: America/Chicago
+    units: imperial
+    cache: 5
+
+# Date & time
+- datetime:
+    format:
+      dateStyle: long
+      timeStyle: short
+
+# Quick search in header
+- search:
+    provider: google
+    target: _blank   # open results in a new tab

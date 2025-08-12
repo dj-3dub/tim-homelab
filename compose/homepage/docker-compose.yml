@@ -1,0 +1,19 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config:/app/config
+      - ./public:/app/public
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: "homepage.example,homepage.example:443,homepage.example:3000,localhost,127.0.0.1,192.0.2.10"
+      # HOMEPAGE_DEBUG: "1"   # uncomment while troubleshooting
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

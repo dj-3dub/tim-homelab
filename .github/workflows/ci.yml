@@ -1,0 +1,19 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python byte-compile
+        run: |
+          python -m py_compile scripts/*.py || true
+      - name: Shell lint (basic)
+        run: |
+          set -e
+          sudo apt-get update && sudo apt-get install -y shellcheck
+          shellcheck scripts/*.sh || true
