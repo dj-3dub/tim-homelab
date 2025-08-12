@@ -1,3 +1,5 @@
+[![CI](https://github.com/dj-3dub/tim-homelab/actions/workflows/ci.yml/badge.svg)](https://github.com/dj-3dub/tim-homelab/actions/workflows/ci.yml)
+
 # Homelab (Pi-hole · Caddy · Homepage)
 
 Reusable Docker stack + backup/restore tooling.
