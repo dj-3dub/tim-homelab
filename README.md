@@ -64,38 +64,23 @@ It also includes **monitoring and self-healing** logic to keep services healthy 
 
 ```mermaid
 flowchart LR
-  subgraph Clients
-    U1[Client (Laptop/Phone)]
-  end
+  U1[Client]
+  RP[Caddy Reverse Proxy]
+  HP[Homepage Container]
+  PH[Pi-hole Container]
+  WD[Watchdog Container]
+  ZG[zombie_guard.py]
+  SMK[smoke_test_zombies.py]
 
-  U1 -->|HTTPS LAN| RP[Caddy reverse proxy]
-
-  subgraph ProxyNet[Docker network: proxy]
-    direction LR
-    RP -->|http:3000| HP[Homepage container]
-    RP -->|http:80|   PH[Pi-hole container]
-  end
-
-  %% Monitoring & Self-Healing
-  subgraph Ops[Monitoring & Self-Healing]
-    WD[Watchdog container]
-    ZG[zombie_guard.py]
-    SMK[smoke_test_zombies.py]
-  end
+  U1 --> RP
+  RP -->|http:3000| HP
+  RP -->|http:80|   PH
 
   WD --> ZG
   WD --> SMK
-  ZG -->|detects zombies| ZOMBIE((defunct child))
-  ZOMBIE -.-> PARENT([Parent PID in container])
-  ZG -->|map ppid -> container| MAP{{docker inspect / cgroup}}
+  ZG -->|detect zombies| HP
+  ZG -->|detect zombies| PH
   ZG -->|auto-restart| HP
   ZG -->|auto-restart| PH
 
-  %% Notes (avoid backticks/HTML here)
-  %% PID 1 = docker-init via init:true helps reap children and prevent zombies
-
-  classDef svc fill:#eef,stroke:#88a,color:#000
-  classDef ops fill:#efe,stroke:#8a8,color:#000
-  class HP,PH,RP svc
-  class WD,ZG,SMK ops
 
