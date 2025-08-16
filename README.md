@@ -60,7 +60,7 @@ It also includes **monitoring and self-healing** logic to keep services healthy 
 
 ---
 
-## 🗺️ Architecture
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -101,3 +101,4 @@ flowchart LR
     classDef ops fill:#efe,stroke:#8a8,color:#000
     class HP,PH,RP svc
     class WD,ZG,SMK ops
+
