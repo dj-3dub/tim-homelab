@@ -64,41 +64,38 @@ It also includes **monitoring and self-healing** logic to keep services healthy 
 
 ```mermaid
 flowchart LR
-    subgraph Client["Clients / Browsers"]
-      U1["Laptop / Phone"]
-    end
+  subgraph Clients
+    U1[Client (Laptop/Phone)]
+  end
 
-    U1 -->|HTTPS (LAN)| RP[Caddy Reverse Proxy]
+  U1 -->|HTTPS LAN| RP[Caddy reverse proxy]
 
-    subgraph DockerNet["Docker Network (proxy)"]
-      direction LR
-      RP -->|HTTP :3000| HP[Homepage Container]
-      RP -->|HTTP :80| PH[Pi-hole Container]
-    end
+  subgraph ProxyNet[Docker network: proxy]
+    direction LR
+    RP -->|http:3000| HP[Homepage container]
+    RP -->|http:80|   PH[Pi-hole container]
+  end
 
-    %% Monitoring & Self-Healing
-    subgraph Ops["Monitoring & Self-Healing"]
-      WD[Watchdog Container]
-      ZG[zombie_guard.py]
-      SMK[smoke_test_zombies.py]
-    end
+  %% Monitoring & Self-Healing
+  subgraph Ops[Monitoring & Self-Healing]
+    WD[Watchdog container]
+    ZG[zombie_guard.py]
+    SMK[smoke_test_zombies.py]
+  end
 
-    WD -->|executes staged checks| ZG
-    WD -->|periodic checks| SMK
-    ZG -->|detects 'Z' zombies| ZOMBIE{{Defunct Child<br/>(e.g., wget &lt;defunct&gt;)}}
-    ZOMBIE -. parent-> PARENT([Parent PID in Container])
-    ZG -->|maps PPID → container| MAP{{docker inspect / cgroup}}
-    ZG -->|auto-restart| HP
-    ZG -->|auto-restart| PH
+  WD --> ZG
+  WD --> SMK
+  ZG -->|detects zombies| ZOMBIE((defunct child))
+  ZOMBIE -.-> PARENT([Parent PID in container])
+  ZG -->|map ppid -> container| MAP{{docker inspect / cgroup}}
+  ZG -->|auto-restart| HP
+  ZG -->|auto-restart| PH
 
-    %% Notes
-    note right of HP
-      PID 1 = docker-init (via `init: true`)
-      Reaps orphaned children → prevents zombies
-    end
+  %% Notes (avoid backticks/HTML here)
+  %% PID 1 = docker-init via init:true helps reap children and prevent zombies
 
-    classDef svc fill:#eef,stroke:#88a,color:#000
-    classDef ops fill:#efe,stroke:#8a8,color:#000
-    class HP,PH,RP svc
-    class WD,ZG,SMK ops
+  classDef svc fill:#eef,stroke:#88a,color:#000
+  classDef ops fill:#efe,stroke:#8a8,color:#000
+  class HP,PH,RP svc
+  class WD,ZG,SMK ops
 
