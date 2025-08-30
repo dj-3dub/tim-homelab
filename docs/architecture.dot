@@ -1,0 +1,33 @@
+digraph "Homelab Architecture" {
+  rankdir=LR;
+  graph [fontsize=10, labelloc="t", label="Homelab: Caddy + Homepage + Pi-hole"];
+  node  [shape=box, style=rounded, fontsize=10];
+  edge  [fontsize=9];
+
+  subgraph cluster_clients { label="Clients"; style=rounded; U1 [label="Laptop / Phone", shape=box3d]; }
+
+  RP [label="Caddy Reverse Proxy\n(TLS termination • cert rotation)", style="rounded,filled", fillcolor="#eef5ff"];
+
+  U1 -> RP [label="HTTPS (LAN)"];
+
+  subgraph cluster_proxy {
+    label="Docker Network: proxy"; style=rounded;
+    HP [label="Homepage :3000", style="rounded,filled", fillcolor="#eef5ff"];
+    PH [label="Pi-hole :80 (/admin)", style="rounded,filled", fillcolor="#eef5ff"];
+  }
+
+  RP -> HP [label="HTTP :3000"];
+  RP -> PH [label="HTTP :80"];
+
+  subgraph cluster_ops {
+    label="Monitoring & Self-Healing"; style=rounded;
+    WD  [label="Watchdog container", shape=component, style="rounded,filled", fillcolor="#efffee"];
+    ZG  [label="zombie_guard.py", shape=note, style=filled, fillcolor="#efffee"];
+    SMK [label="smoke_test_zombies.py", shape=note, style=filled, fillcolor="#efffee"];
+  }
+
+  WD -> ZG  [label="executes checks"];
+  WD -> SMK [label="periodic checks"];
+  ZG -> HP  [label="detect → restart"];
+  ZG -> PH  [label="detect → restart"];
+}
