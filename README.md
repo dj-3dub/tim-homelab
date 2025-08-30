@@ -62,25 +62,4 @@ It also includes **monitoring and self-healing** logic to keep services healthy 
 
 ## Architecture
 
-```mermaid
-flowchart LR
-  U1[Client]
-  RP[Caddy Reverse Proxy]
-  HP[Homepage Container]
-  PH[Pi-hole Container]
-  WD[Watchdog Container]
-  ZG[zombie_guard.py]
-  SMK[smoke_test_zombies.py]
-
-  U1 --> RP
-  RP -->|http:3000| HP
-  RP -->|http:80|   PH
-
-  WD --> ZG
-  WD --> SMK
-  ZG -->|detect zombies| HP
-  ZG -->|detect zombies| PH
-  ZG -->|auto-restart| HP
-  ZG -->|auto-restart| PH
-
-
+![Architecture](docs/architecture.svg)
